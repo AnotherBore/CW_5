@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="350.0" minWidth="300.0" prefHeight="350.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.etit.cw_5.VisualControllers.EditExhibitController">
+   <padding>
+      <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+   </padding>
+   <children>
+      <TextField fx:id="tfTitle" onKeyReleased="#tfTItleOnKeyRealeased" promptText="Название">
+         <VBox.margin>
+            <Insets bottom="20.0" />
+         </VBox.margin>
+      </TextField>
+      <TextField fx:id="tfAuthor" onKeyReleased="#tfAuthorOnKeyRealeased" promptText="Автор">
+         <VBox.margin>
+            <Insets bottom="20.0" />
+         </VBox.margin>
+      </TextField>
+      <ComboBox fx:id="cbHall" prefHeight="26.0" prefWidth="293.0" promptText="Зал">
+         <VBox.margin>
+            <Insets bottom="20.0" />
+         </VBox.margin>
+      </ComboBox>
+      <DatePicker fx:id="dpInPos" prefHeight="26.0" prefWidth="296.0" promptText="Впервые выставлен">
+         <VBox.margin>
+            <Insets bottom="20.0" />
+         </VBox.margin>
+      </DatePicker>
+      <TextField fx:id="tfEow" onKeyReleased="#tfEowOnKeyRealeased" promptText="Окончание работы">
+         <VBox.margin>
+            <Insets bottom="20.0" />
+         </VBox.margin>
+      </TextField>
+      <TextField fx:id="tfType" onKeyReleased="#tfTypeOnKeyRealeased" promptText="Тип" />
+      <Button fx:id="btnOK" alignment="CENTER" mnemonicParsing="false" onAction="#btnOkonClick" text="OK">
+         <VBox.margin>
+            <Insets bottom="20.0" top="20.0" />
+         </VBox.margin>
+      </Button>
+   </children>
+</VBox>
