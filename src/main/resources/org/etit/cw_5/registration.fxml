@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<VBox alignment="CENTER" prefHeight="180" prefWidth="320" spacing="10.0" xmlns="http://javafx.com/javafx/15" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.etit.cw_5.VisualControllers.RegistrationController">
+<VBox alignment="CENTER" prefHeight="180" prefWidth="320" spacing="10.0" xmlns="http://javafx.com/javafx/11" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.etit.cw_5.VisualControllers.RegistrationController">
     <children>
     <Label text="Имя пользователя">
         <font>

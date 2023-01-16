@@ -4,7 +4,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.etit.cw_5.Classes.Exhibit;
 import org.etit.cw_5.Classes.Hall;
-import org.etit.cw_5.Classes.Staff;
 import org.etit.cw_5.Classes.User;
 
 import java.sql.*;
@@ -60,47 +59,15 @@ public class DataBaseController {
         }
     }
 
-//    public static byte searchHall(String name){
-//        byte x=0;
-//        try {
-//            ResultSet rs = statement.executeQuery("SELECT H_ID FROM HALLS WHERE H_NAME='"+name+"';");
-//            x = (byte) rs.getInt(1);
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//        return x;
-//    }
-
-//    public static void addExhibit(int id, ){
-//        String result;
-//        try {
-//            statement.executeUpdate("INSERT INTO EXHIBITS VALUES (WHERE E_ID = "+id+";");
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//    }
-
-    public static ObservableList<Hall> getHall(){
-        ObservableList<Hall> halls = FXCollections.observableArrayList();
-        String sql = "SELECT H_ID, H_NAME FROM HALLS";
+    public static boolean editExhibit(int id, String title, String author, int hall, String type, int eow, LocalDate inPos){
+        Integer eow_true=0;
+        eow_true = eow==0 ? null : eow;
+        String author_true = author.matches("[Н|н]еизвестен") ? "Неизвестен" : author;
+        String sql = String.format("UPDATE EXHIBITS SET E_TITLE='%s', E_AUTHOR='%s'," +
+                " E_TYPE='%s', E_HALL=%d, E_EOW=%d, E_IN_POS='%s' WHERE E_ID=%d;",
+                title, author_true, type, hall, eow_true, Date.valueOf(inPos), id);
         try {
-            ResultSet rS = statement.executeQuery(sql);
-            while (rS.next()){
-                var x = new Hall();
-                x.setId(rS.getInt(1));
-                x.setName(rS.getString(2));
-                halls.add(x);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return halls;
-    }
-
-    public static boolean deleteHall(int id){
-        String result;
-        try {
-            statement.executeUpdate("DELETE FROM HALLS WHERE H_ID = "+id+";");
+            statement.executeUpdate(sql);
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -108,14 +75,26 @@ public class DataBaseController {
         }
     }
 
-    public static boolean editExhibit(int id, String title, String author, int hall, String type, int eow, LocalDate inPos){
+    public static boolean addExhibit(String title, String author, int hall, String type, int eow, LocalDate inPos){
         Integer eow_true=0;
         eow_true = eow==0 ? null : eow;
-        String sql = String.format("UPDATE EXHIBITS SET E_TITLE='%s', E_AUTHOR='%s'," +
-                " E_TYPE='%s', E_HALL=%d, E_EOW=%d, E_IN_POS='%s' WHERE E_ID=%d;",
-                title, author, type, hall, eow_true, Date.valueOf(inPos), id);
+        String author_true = author.matches("[Н|н]еизвестен") ? "Неизвестен" : author;
+        String sql = String.format("INSERT INTO EXHIBITS (E_HALL, E_AUTHOR, E_TITLE, E_EOW, E_IN_POS, E_TYPE)" +
+                        " VALUES (%d, '%s', '%s', %d, '%s', '%s');",
+                hall, author_true, title, eow_true, Date.valueOf(inPos), type);
         try {
             statement.executeUpdate(sql);
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public static boolean deleteHall(int id){
+        String result;
+        try {
+            statement.executeUpdate("DELETE FROM HALLS WHERE H_ID = "+id+";");
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -134,21 +113,22 @@ public class DataBaseController {
         }
     }
 
-    public static boolean addExhibit(String title, String author, int hall, String type, int eow, LocalDate inPos){
-        Integer eow_true=0;
-        eow_true = eow==0 ? null : eow;
-        String sql = String.format("INSERT INTO EXHIBITS (E_HALL, E_AUTHOR, E_TITLE, E_EOW, E_IN_POS, E_TYPE)" +
-                        " VALUES (%d, '%s', '%s', %d, '%s', '%s');",
-                hall, author, title, eow_true, Date.valueOf(inPos), type);
+    public static ObservableList<Hall> getHall(){
+        ObservableList<Hall> halls = FXCollections.observableArrayList();
+        String sql = "SELECT H_ID, H_NAME FROM HALLS";
         try {
-            statement.executeUpdate(sql);
-            return true;
+            ResultSet rS = statement.executeQuery(sql);
+            while (rS.next()){
+                var x = new Hall();
+                x.setId(rS.getInt(1));
+                x.setName(rS.getString(2));
+                halls.add(x);
+            }
         } catch (SQLException e) {
             e.printStackTrace();
-            return false;
         }
+        return halls;
     }
-
 
     public static boolean editHall(int id, int editId, String hallName){
         String sql ="UPDATE HALLS SET H_NAME='"+hallName+"', H_ID="+editId+" WHERE H_ID="+id+";";

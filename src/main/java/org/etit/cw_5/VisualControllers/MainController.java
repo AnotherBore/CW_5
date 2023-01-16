@@ -1,12 +1,10 @@
 package org.etit.cw_5.VisualControllers;
 
-import javafx.beans.property.ObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -20,23 +18,8 @@ import org.etit.cw_5.DataBaseController;
 import org.etit.cw_5.Main;
 
 import java.io.IOException;
-import java.net.URL;
-import java.util.ResourceBundle;
 
 public class MainController {
-
-//    public TableView tvStaff;
-//
-//    public TableColumn<String, Staff>  tcStaffName;
-//    public TableColumn<String, Staff> tcStaffPatr;
-//    public TableColumn<String, Staff>  tcStaffSurname;
-//    public TableColumn<Long, Staff>  tcStaffInn;
-//    public TableColumn<String, Staff>  tcStaffPhone;
-//    public TableColumn<Date, Staff> tcStaffBD;
-//    public TableColumn<Character, Staff> tcStaffSex;
-//    public TableColumn<String, Staff> tcStaffPost;
-//    Staff staffDel;
-
     public TableView tvExhibits;
     public TableColumn tcExibitsTitle;
     public TableColumn tcExibitsAuthor;
@@ -63,6 +46,69 @@ public class MainController {
     private Hall editableHall;
     private int privilegeLevel;
 
+    public void setData(int ans) {
+        privilegeLevel=ans;
+        if(privilegeLevel==1){
+            tfHallNumber.setVisible(false);
+            tfHallName.setVisible(false);
+            btnAddHall.setVisible(false);
+            btnDeleteExhibit.setVisible(false);
+            btnDeleteHall.setVisible(false);
+            btnAddExhibit.setVisible(false);
+        }
+        else if(privilegeLevel==0){
+            tvHalls.setRowFactory(tv -> {
+                TableRow<Hall> row = new TableRow<>();
+                row.setOnMouseClicked(event -> {
+                    if (event.getClickCount() == 2 && (! row.isEmpty()) ) {
+                        editableHall = row.getItem();
+                        try {
+                            editHall();
+                        }catch (IOException e){
+                            e.printStackTrace();
+                        }
+                    }
+                });
+                return row ;
+            });
+
+            tvExhibits.setRowFactory(tv -> {
+                TableRow<Exhibit> row = new TableRow<>();
+                row.setOnMouseClicked(event -> {
+                    if (event.getClickCount() == 2 && (! row.isEmpty()) ) {
+                        editableExhibit = row.getItem();
+                        try {
+                            editExhibit();
+                        }catch (IOException e){
+                            e.printStackTrace();
+                        }
+                    }
+                });
+                return row ;
+            });
+        }
+
+        loadTables();
+
+        var selectionModelHall = tvHalls.getSelectionModel();
+        selectionModelHall.selectedItemProperty().addListener(new ChangeListener<Hall>() {
+            @Override
+            public void changed(ObservableValue<? extends Hall> observableValue, Hall hall, Hall sel) {
+                if(sel!=null){
+                    deletableHall = sel;
+                }
+            }
+        });
+
+        var selectionModelExhibit = tvExhibits.getSelectionModel();
+        selectionModelExhibit.selectedItemProperty().addListener(new ChangeListener<Exhibit>() {
+            public void changed(ObservableValue<? extends Exhibit> observableValue, Exhibit exhibit, Exhibit sel) {
+                if(sel!=null){
+                    deletableExhibit = sel;
+                }
+            }
+        });
+    }
 
     private void editExhibit() throws IOException {
         Stage editStage = new Stage();
@@ -208,69 +254,5 @@ public class MainController {
 
     public void tfSearchOnKeyRealesed(KeyEvent keyEvent) {
         btnSearch.setDisable(tfSearch.getText().isEmpty());
-    }
-
-    public void setData(int ans) {
-        privilegeLevel=ans;
-        if(privilegeLevel==1){
-            tfHallNumber.setVisible(false);
-            tfHallName.setVisible(false);
-            btnAddHall.setVisible(false);
-            btnDeleteExhibit.setVisible(false);
-            btnDeleteHall.setVisible(false);
-            btnAddExhibit.setVisible(false);
-        }
-        else if(privilegeLevel==0){
-            tvHalls.setRowFactory(tv -> {
-                TableRow<Hall> row = new TableRow<>();
-                row.setOnMouseClicked(event -> {
-                    if (event.getClickCount() == 2 && (! row.isEmpty()) ) {
-                        editableHall = row.getItem();
-                        try {
-                            editHall();
-                        }catch (IOException e){
-                            e.printStackTrace();
-                        }
-                    }
-                });
-                return row ;
-            });
-
-            tvExhibits.setRowFactory(tv -> {
-                TableRow<Exhibit> row = new TableRow<>();
-                row.setOnMouseClicked(event -> {
-                    if (event.getClickCount() == 2 && (! row.isEmpty()) ) {
-                        editableExhibit = row.getItem();
-                        try {
-                            editExhibit();
-                        }catch (IOException e){
-                            e.printStackTrace();
-                        }
-                    }
-                });
-                return row ;
-            });
-        }
-
-        loadTables();
-
-        var selectionModelHall = tvHalls.getSelectionModel();
-        selectionModelHall.selectedItemProperty().addListener(new ChangeListener<Hall>() {
-            @Override
-            public void changed(ObservableValue<? extends Hall> observableValue, Hall hall, Hall sel) {
-                if(sel!=null){
-                    deletableHall = sel;
-                }
-            }
-        });
-
-        var selectionModelExhibit = tvExhibits.getSelectionModel();
-        selectionModelExhibit.selectedItemProperty().addListener(new ChangeListener<Exhibit>() {
-            public void changed(ObservableValue<? extends Exhibit> observableValue, Exhibit exhibit, Exhibit sel) {
-                if(sel!=null){
-                    deletableExhibit = sel;
-                }
-            }
-        });
     }
 }
