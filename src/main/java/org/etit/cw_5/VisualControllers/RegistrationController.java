@@ -16,6 +16,7 @@ import org.etit.cw_5.Main;
 import java.io.IOException;
 
 public class RegistrationController {
+    public TextField tfINN;
     @FXML
     private Label lblError;
     @FXML
@@ -30,12 +31,21 @@ public class RegistrationController {
         String username = txtUsername.getText();
         String password = txtPassword.getText();
         String passwordSecond = txtPasswordSecond.getText();
-
-        if(username.isEmpty() || password.isEmpty() || !password.equals(passwordSecond)){
+        long inn = -100;
+        try{
+            inn = Long.parseLong(tfINN.getText());
+        }catch (NumberFormatException e){
             lblError.setText("Проверьте данные в полях");
             return;
         }
-        User user = new User(username, password, (byte) 1);
+        int staff = DataBaseController.getStaffFromINN(inn);
+
+        if(username.isEmpty() || password.isEmpty() || !password.equals(passwordSecond) || staff==-100){
+            lblError.setText("Проверьте данные в полях");
+            return;
+        }
+
+        User user = new User(username, password, (byte) 1, staff);
         DataBaseController.addUser(user);
 
         Stage stage = (Stage) txtUsername.getScene().getWindow();

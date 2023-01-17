@@ -5,26 +5,12 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<VBox alignment="CENTER" prefHeight="180" prefWidth="320" spacing="10.0" xmlns="http://javafx.com/javafx/11" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.etit.cw_5.VisualControllers.RegistrationController">
+<VBox alignment="CENTER" prefHeight="180" prefWidth="320" spacing="10.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.etit.cw_5.VisualControllers.RegistrationController">
     <children>
-    <Label text="Имя пользователя">
-        <font>
-            <Font size="14.0" />
-        </font>
-    </Label>
-    <TextField fx:id="txtUsername" />
-    <Label text="Пароль">
-        <font>
-            <Font size="14.0" />
-        </font>
-    </Label>
-    <PasswordField fx:id="txtPassword" />
-      <Label text="Повторите пароль">
-         <font>
-            <Font size="14.0" />
-         </font>
-      </Label>
-    <PasswordField fx:id="txtPasswordSecond"/>
+    <TextField fx:id="txtUsername" promptText="Имя пользователя" />
+      <TextField fx:id="tfINN" promptText="ИНН" />
+    <PasswordField fx:id="txtPassword" promptText="Пароль" />
+    <PasswordField fx:id="txtPasswordSecond" promptText="Повторите пароль" />
       <Label fx:id="lblError" textAlignment="CENTER" textFill="RED">
          <font>
             <Font size="14.0" />

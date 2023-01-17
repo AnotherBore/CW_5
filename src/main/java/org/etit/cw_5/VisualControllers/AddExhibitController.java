@@ -53,10 +53,11 @@ public class AddExhibitController {
 
     public void btnOkonClick(ActionEvent actionEvent) {
         Alert alert;
-        int eow = Integer.parseInt(tfEow.getText());
+
         try{
+            int eow = Integer.parseInt(tfEow.getText());
             var correct = DataBaseController.addExhibit( tfTitle.getText(),
-                    tfAuthor.getText(), cbHall.getSelectionModel().getSelectedIndex() + 1,
+                    tfAuthor.getText(), cbHall.getValue().toString(),
                     tfType.getText(), eow, dpInPos.getValue());
             if(correct){
                 Stage stage = (Stage)tfTitle.getScene().getWindow();

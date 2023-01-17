@@ -105,12 +105,15 @@
                                     <Font size="14.0" />
                                  </font>
                               </Button>
-                              <TextField fx:id="tfHallName" onKeyReleased="#tfHallNameKeyReleased" prefWidth="200.0" promptText="Тематика" GridPane.rowIndex="0">
+                              <TextField fx:id="tfHallName" onKeyReleased="#tfHallNameKeyReleased" prefWidth="200.0" promptText="Тематика" GridPane.rowIndex="2">
                                  <font>
                                     <Font size="14.0" />
                                  </font>
                               </TextField>
-                              <TextField fx:id="tfHallNumber" onKeyReleased="#tfHallNumberKeyReleased" promptText="Номер" GridPane.rowIndex="2" />
+                              <TextField fx:id="tfHallNumber" onKeyReleased="#tfHallNumberKeyReleased" promptText="Номер" GridPane.rowIndex="0">
+                              <font>
+                                 <Font size="14.0" />
+                              </font></TextField>
                            </children>
                            <padding>
                               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
@@ -129,6 +132,51 @@
                   </right>
                </BorderPane>
             </VBox>
+        </content>
+    </Tab>
+    <Tab text="Экскурсии">
+        <content>
+              <VBox minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                  <children>
+                      <TableView fx:id="tvTours" prefHeight="655.0" prefWidth="800.0">
+                          <columns>
+                              <TableColumn fx:id="tcTourGuide" prefWidth="215.59999084472656" text="Экскурсовод" />
+                              <TableColumn fx:id="tcTourDate" prefWidth="109.60000610351562" text="Дата" />
+                              <TableColumn fx:id="tcTourPeople" prefWidth="269.5999755859375" text="Группа (чел.)" />
+                              <TableColumn fx:id="tcTourType" minWidth="54.0" prefWidth="152.60000610351562" resizable="false" text="Тип" />
+                          </columns>
+                     <columnResizePolicy>
+                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                     </columnResizePolicy>
+                      </TableView>
+                      <BorderPane prefHeight="200.0" prefWidth="200.0">
+                          <right>
+                              <HBox prefHeight="51.0" prefWidth="242.0" BorderPane.alignment="CENTER">
+                                  <children>
+                                      <Button fx:id="btnAddTour" mnemonicParsing="false" onAction="#btnAddTourOnClick" text="Добавить">
+                                          <font>
+                                              <Font size="14.0" />
+                                          </font>
+                                          <HBox.margin>
+                                              <Insets right="30.0" />
+                                          </HBox.margin>
+                                      </Button>
+                                      <Button fx:id="btnDeleteTour" mnemonicParsing="false" onAction="#btnTourDeleteClick" text="Удалить">
+                                          <font>
+                                              <Font size="14.0" />
+                                          </font>
+                                      </Button>
+                                  </children>
+                                  <padding>
+                                      <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                  </padding>
+                              </HBox>
+                          </right>
+                          <padding>
+                              <Insets top="10.0" />
+                          </padding>
+                      </BorderPane>
+                  </children></VBox>
         </content>
     </Tab>
   </tabs>

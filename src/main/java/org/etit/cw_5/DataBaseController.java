@@ -4,6 +4,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.etit.cw_5.Classes.Exhibit;
 import org.etit.cw_5.Classes.Hall;
+import org.etit.cw_5.Classes.Tour;
 import org.etit.cw_5.Classes.User;
 
 import java.sql.*;
@@ -59,12 +60,12 @@ public class DataBaseController {
         }
     }
 
-    public static boolean editExhibit(int id, String title, String author, int hall, String type, int eow, LocalDate inPos){
+    public static boolean editExhibit(int id, String title, String author, String hall, String type, int eow, LocalDate inPos){
         Integer eow_true=0;
         eow_true = eow==0 ? null : eow;
         String author_true = author.matches("[Н|н]еизвестен") ? "Неизвестен" : author;
         String sql = String.format("UPDATE EXHIBITS SET E_TITLE='%s', E_AUTHOR='%s'," +
-                " E_TYPE='%s', E_HALL=%d, E_EOW=%d, E_IN_POS='%s' WHERE E_ID=%d;",
+                " E_TYPE='%s', E_HALL=(SELECT H_ID FROM HALLS WHERE H_NAME='%s'), E_EOW=%d, E_IN_POS='%s' WHERE E_ID=%d;",
                 title, author_true, type, hall, eow_true, Date.valueOf(inPos), id);
         try {
             statement.executeUpdate(sql);
@@ -75,12 +76,12 @@ public class DataBaseController {
         }
     }
 
-    public static boolean addExhibit(String title, String author, int hall, String type, int eow, LocalDate inPos){
+    public static boolean addExhibit(String title, String author, String hall, String type, int eow, LocalDate inPos){
         Integer eow_true=0;
         eow_true = eow==0 ? null : eow;
         String author_true = author.matches("[Н|н]еизвестен") ? "Неизвестен" : author;
         String sql = String.format("INSERT INTO EXHIBITS (E_HALL, E_AUTHOR, E_TITLE, E_EOW, E_IN_POS, E_TYPE)" +
-                        " VALUES (%d, '%s', '%s', %d, '%s', '%s');",
+                        " VALUES ((SELECT H_ID FROM HALLS WHERE H_NAME='%s'), '%s', '%s', %d, '%s', '%s');",
                 hall, author_true, title, eow_true, Date.valueOf(inPos), type);
         try {
             statement.executeUpdate(sql);
@@ -141,11 +142,145 @@ public class DataBaseController {
         }
     }
 
+    public static boolean isGuide(int staff){
+        String sql = "SELECT S_ID, P_NAME FROM STAFF JOIN POSTS ON S_POST=P_ID WHERE P_NAME='Экскурсовод' AND S_ID="+staff+";";
+        try {
+            ResultSet rS = statement.executeQuery(sql);
+            if(rS.next()){
+                return true;
+            }else{
+                return false;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 
+    public static int getStaffFromINN(long inn){
+        String sql = "SELECT S_ID FROM STAFF WHERE S_INN="+inn+";";
+        try {
+            ResultSet rS = statement.executeQuery(sql);
+            if(rS.next()){
+                return rS.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return -100;
+    }
+
+    public static ObservableList<Tour> getTours(int staff){
+        ObservableList<Tour> tours = FXCollections.observableArrayList();
+        String sql = "SELECT T_ID, S_SURNAME, T_DATE, T_PEOPLE, T_TYPE FROM TOURS JOIN STAFF ON T_GUIDE=S_ID WHERE T_GUIDE="+staff+";";
+        try {
+            ResultSet rS = statement.executeQuery(sql);
+            while (rS.next()){
+                var x = new Tour();
+                x.setId(rS.getInt(1));
+                x.setGuide(rS.getString(2));
+                x.setDate(rS.getDate(3));
+                x.setPeople(rS.getInt(4));
+                x.setType(rS.getString(5));
+                tours.add(x);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return tours;
+    }
+
+    public static ObservableList<Tour> getTours(){
+        ObservableList<Tour> tours = FXCollections.observableArrayList();
+        String sql = "SELECT T_ID, S_SURNAME, T_DATE, T_PEOPLE, T_TYPE FROM TOURS JOIN STAFF ON T_GUIDE=S_ID";
+        try {
+            ResultSet rS = statement.executeQuery(sql);
+            while (rS.next()){
+                var x = new Tour();
+                x.setId(rS.getInt(1));
+                x.setGuide(rS.getString(2));
+                x.setDate(rS.getDate(3));
+                x.setPeople(rS.getInt(4));
+                x.setType(rS.getString(5));
+                tours.add(x);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return tours;
+    }
+
+    public static boolean addTour(String guide, LocalDate date, int people, String type){
+        String sql = String.format("INSERT INTO TOURS (T_GUIDE, T_DATE, T_PEOPLE, T_TYPE)" +
+                        " VALUES ((SELECT S_ID FROM STAFF WHERE S_SURNAME='%s'), '%s', %d, '%s');",
+                guide, Date.valueOf(date), people, type);
+        try {
+            statement.executeUpdate(sql);
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public static boolean updateTour(int id, String guide, LocalDate date, int people, String type){
+        String sql = String.format("UPDATE TOURS SET T_GUIDE=(SELECT S_ID FROM STAFF WHERE S_SURNAME='%s'), T_DATE='%s', T_PEOPLE=%d, T_TYPE='%s' WHERE T_ID=%d;",
+                guide, Date.valueOf(date), people, type, id);
+        try {
+            statement.executeUpdate(sql);
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+
+    public static ObservableList<String> getGuides(){
+        ObservableList<String> guides = FXCollections.observableArrayList();
+        String sql = "SELECT S_SURNAME FROM STAFF WHERE S_POST=3";
+        try {
+            ResultSet rS = statement.executeQuery(sql);
+            while (rS.next()){
+                var x = new String();
+                x = rS.getString(1);
+                guides.add(x);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return guides;
+    }
+
+    public static boolean deleteTour(int id) {
+        String result;
+        try {
+            statement.executeUpdate("DELETE FROM TOURS WHERE T_ID = "+id+";");
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+
+    public static String showHalls(int tour_id) {
+        StringBuilder result= new StringBuilder();
+        try {
+            ResultSet rS = statement.executeQuery("SELECT H_NAME FROM HALLS" +
+                    " JOIN HALLS_TOURS ON HALLS.H_ID=HALLS_TOURS.H_ID WHERE HALLS_TOURS.T_ID="+tour_id+";");
+            while (rS.next()){
+                result.append(rS.getString(1)).append("\n");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return result.toString();
+    }
 
     public static void addUser(User user){
-        String sql ="INSERT INTO USERS (U_USERNAME, U_PASSWORD, U_PRIVILEGE) VALUES ('"+user.getUsername()+"', " +
-                "'"+user.getPassword()+"', '"+user.getPrivilege()+"');";
+        String sql ="INSERT INTO USERS (U_USERNAME, U_PASSWORD, U_PRIVILEGE, U_STAFF) VALUES ('"+user.getUsername()+"', " +
+                "'"+user.getPassword()+"', '"+user.getPrivilege()+"', "+user.getStaff()+");";
         try {
             statement.executeUpdate(sql);
         } catch (SQLException e) {
@@ -153,13 +288,14 @@ public class DataBaseController {
         }
     }
 
-    public static int authorisation(String username, String password){
-        String sql = "SELECT U_PRIVILEGE FROM USERS WHERE U_USERNAME = '"+username+"' AND U_PASSWORD = '"+password+"';";
-        int x = -1;
+    public static User authorisation(String username, String password){
+        String sql = "SELECT U_PRIVILEGE, U_STAFF FROM USERS WHERE U_USERNAME = '"+username+"' AND U_PASSWORD = '"+password+"';";
+        User x = new User(username, password);
         try {
             ResultSet rs = statement.executeQuery(sql);
             if(rs.next()){
-                x = rs.getByte("U_PRIVILEGE");
+                x.setPrivilege(rs.getByte("U_PRIVILEGE"));
+                x.setStaff(rs.getInt("U_STAFF"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -168,4 +304,6 @@ public class DataBaseController {
         }
         return x;
     }
+
+
 }

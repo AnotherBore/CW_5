@@ -13,6 +13,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import org.etit.cw_5.Classes.User;
 import org.etit.cw_5.DataBaseController;
 import org.etit.cw_5.Main;
 
@@ -31,7 +32,7 @@ public class LoginController {
         String username = txtUsername.getText();
         String password = txtPassword.getText();
 
-        int ans = DataBaseController.authorisation(username, password);
+        User user = DataBaseController.authorisation(username, password);
         Stage stage = (Stage) txtUsername.getScene().getWindow();
         Stage newStage = new Stage();
         FXMLLoader fxmlLoader = new FXMLLoader();
@@ -39,20 +40,20 @@ public class LoginController {
         Parent root = fxmlLoader.load();
 
         MainController controller = fxmlLoader.getController();
-        controller.setData(ans);
+        controller.setData(user);
 
         Scene scene = new Scene(root);
         Image applicationIcon = new Image(Main.class.getResourceAsStream("app_icon_32x32.png"));
         newStage.getIcons().add(applicationIcon);
 
-        if(ans!=-1){
-            if(ans==0){
+        if(user.getPrivilege()!=-1){
+            if(user.getPrivilege()==0){
                 newStage.setTitle("Режим администратора");
                 newStage.setScene(scene);
                 newStage.show();
                 stage.close();
             }
-            else if(ans==1){
+            else if(user.getPrivilege()==1){
                 newStage.setTitle("Режим пользователя");
                 newStage.setScene(scene);
             }
