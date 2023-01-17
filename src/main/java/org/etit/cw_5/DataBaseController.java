@@ -264,6 +264,45 @@ public class DataBaseController {
     }
 
 
+    public static ObservableList<Hall> getHallsTours(int tour_id){
+        ObservableList<Hall> halls = FXCollections.observableArrayList();
+        String sql = "SELECT HALLS.H_ID, H_NAME FROM HALLS JOIN HALLS_TOURS ON HALLS.H_ID=HALLS_TOURS.H_ID WHERE HALLS_TOURS.T_ID="+tour_id+";";
+        try {
+            ResultSet rS = statement.executeQuery(sql);
+            while (rS.next()){
+                var x = new Hall();
+                x.setId(rS.getInt(1));
+                x.setName(rS.getString(2));
+                halls.add(x);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return halls;
+    }
+
+    public static boolean addHallsTours(String h_name, int t_id){
+        String sql ="INSERT INTO HALLS_TOURS (H_ID, T_ID) VALUES ((SELECT H_ID FROM HALLS WHERE H_NAME='"+h_name+"'), "+t_id+");";
+        try {
+            statement.executeUpdate(sql);
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public static boolean deleteHallsTours(int id) {
+        String result;
+        try {
+            statement.executeUpdate("DELETE FROM HALLS_TOURS WHERE H_ID = "+id+";");
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     public static String showHalls(int tour_id) {
         StringBuilder result= new StringBuilder();
         try {

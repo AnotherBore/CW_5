@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<VBox alignment="CENTER" prefHeight="276.0" prefWidth="259.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.etit.cw_5.VisualControllers.ShowThemesController">
+   <children>
+      <TextArea fx:id="taHalls" editable="false" prefHeight="200.0" prefWidth="200.0">
+         <font>
+            <Font size="14.0" />
+         </font></TextArea>
+      <Button fx:id="btnOk" mnemonicParsing="false" onAction="#btnOkOnCLick" text="OK">
+         <VBox.margin>
+            <Insets top="20.0" />
+         </VBox.margin>
+      </Button>
+   </children>
+   <padding>
+      <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+   </padding>
+</VBox>

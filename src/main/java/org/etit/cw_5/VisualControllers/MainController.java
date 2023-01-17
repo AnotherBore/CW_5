@@ -61,6 +61,7 @@ public class MainController {
 
     public void setData(User user) {
         this.user=user;
+        loadTables();
         if(user.getPrivilege()==1){
             tfHallNumber.setVisible(false);
             tfHallName.setVisible(false);
@@ -70,7 +71,22 @@ public class MainController {
             btnAddExhibit.setVisible(false);
             btnAddTour.setVisible(false);
             btnDeleteTour.setVisible(false);
-
+            if(isGuide){
+                tvTours.setRowFactory(tv -> {
+                    TableRow<Tour> row = new TableRow<>();
+                    row.setOnMouseClicked(event -> {
+                        if(event.getButton() == MouseButton.SECONDARY && (! row.isEmpty())){
+                            editableTour = row.getItem();
+                            try {
+                                showThemes();
+                            }catch (IOException e){
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+                    return row ;
+                });
+            }
         }
         else if(user.getPrivilege()==0){
             tvHalls.setRowFactory(tv -> {
@@ -113,10 +129,10 @@ public class MainController {
                         }catch (IOException e){
                             e.printStackTrace();
                         }
-                    }else if(event.getButton() == MouseButton.SECONDARY && (! row.isEmpty()) && isGuide){
+                    }else if(event.getButton() == MouseButton.SECONDARY && (! row.isEmpty())){
                         editableTour = row.getItem();
                         try {
-                            showThemes();
+                            editHallsTour();
                         }catch (IOException e){
                             e.printStackTrace();
                         }
@@ -153,24 +169,26 @@ public class MainController {
                     }
                 }
             });
+
         }
 
-        loadTables();
+    }
 
-        tvTours.setRowFactory(tv -> {
-            TableRow<Tour> row = new TableRow<>();
-            row.setOnMouseClicked(event -> {
-                if(event.getButton() == MouseButton.SECONDARY && (! row.isEmpty()) && isGuide){
-                    editableTour = row.getItem();
-                    try {
-                        showThemes();
-                    }catch (IOException e){
-                        e.printStackTrace();
-                    }
-                }
-            });
-            return row ;
-        });
+    private void editHallsTour() throws IOException{
+        Stage editStage = new Stage();
+        editStage.initModality(Modality.NONE);
+
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        fxmlLoader.setLocation(Main.class.getResource("hallsTours.fxml"));
+        Parent root = fxmlLoader.load();
+
+        HallsToursController controller = fxmlLoader.getController();
+        controller.setData(editableTour);
+
+        Scene scene = new Scene(root);
+        editStage.setTitle("Охват залов");
+        editStage.setScene(scene);
+        editStage.showAndWait();
     }
 
     private void showThemes() throws IOException{
